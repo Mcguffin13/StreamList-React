@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom"; // ✅ Only import Routes & Route
 import NavBar from "./components/NavBar";
 import StreamListPage from "./pages/StreamListPage";
 import MoviesPage from "./pages/MoviesPage";

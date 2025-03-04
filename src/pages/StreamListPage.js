@@ -1,71 +1,107 @@
-import { useState } from "react";
-import { FaEdit, FaTrash, FaCheck } from "react-icons/fa"; // Import icons
+import React, { useState, useEffect } from "react";
+import { FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 
 const StreamListPage = () => {
-  const [streamList, setStreamList] = useState([]);
+  // Load movies from localStorage or initialize as an empty array
+  const [movies, setMovies] = useState(() => {
+    const savedMovies = localStorage.getItem("movies");
+    return savedMovies ? JSON.parse(savedMovies) : [];
+  });
+
   const [input, setInput] = useState("");
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
 
-  const handleAdd = () => {
-    if (input.trim()) {
-      setStreamList([...streamList, { title: input, completed: false }]);
-      setInput("");
-    }
+  // Save movies to localStorage whenever the list updates
+  useEffect(() => {
+    localStorage.setItem("movies", JSON.stringify(movies));
+  }, [movies]);
+
+  // Add a new movie to the list
+  const addMovie = () => {
+    if (input.trim() === "") return;
+    setMovies([...movies, { id: Date.now(), title: input, completed: false }]);
+    setInput(""); // Clear input field
   };
 
-  const handleDelete = (index) => {
-    setStreamList(streamList.filter((_, i) => i !== index));
+  // Delete a movie from the list
+  const deleteMovie = (id) => {
+    setMovies(movies.filter((movie) => movie.id !== id));
   };
 
-  const handleEdit = (index) => {
-    setEditingIndex(index);
-    setEditText(streamList[index].title);
+  // Mark a movie as completed
+  const toggleComplete = (id) => {
+    setMovies(
+      movies.map((movie) =>
+        movie.id === id ? { ...movie, completed: !movie.completed } : movie
+      )
+    );
   };
 
-  const handleSaveEdit = (index) => {
-    const updatedList = [...streamList];
-    updatedList[index].title = editText;
-    setStreamList(updatedList);
-    setEditingIndex(null);
+  // Start editing a movie
+  const startEditing = (id, title) => {
+    setEditId(id);
+    setEditText(title);
   };
 
-  const handleComplete = (index) => {
-    const updatedList = [...streamList];
-    updatedList[index].completed = !updatedList[index].completed;
-    setStreamList(updatedList);
+  // Save the edited movie title
+  const saveEdit = () => {
+    setMovies(
+      movies.map((movie) =>
+        movie.id === editId ? { ...movie, title: editText } : movie
+      )
+    );
+    setEditId(null);
+    setEditText("");
   };
 
   return (
     <div>
-      <h2>StreamList Page</h2>
+      <h1>StreamList Page</h1>
       <p>Manage your streaming list below:</p>
+
+      {/* Input for adding new movies */}
       <input
         type="text"
         placeholder="Enter movie title..."
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <button onClick={handleAdd}>Add</button>
+      <button onClick={addMovie}>Add</button>
 
+      {/* List of movies */}
       <ul>
-        {streamList.map((movie, index) => (
-          <li key={index} style={{ textDecoration: movie.completed ? "line-through" : "none" }}>
-            {editingIndex === index ? (
+        {movies.map((movie) => (
+          <li key={movie.id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {editId === movie.id ? (
               <>
                 <input
                   type="text"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                 />
-                <button onClick={() => handleSaveEdit(index)}>Save</button>
+                <button onClick={saveEdit}>Save</button>
               </>
             ) : (
               <>
-                {movie.title}
-                <FaCheck onClick={() => handleComplete(index)} title="Mark as watched" style={{ cursor: "pointer", marginLeft: "10px", color: "green" }} />
-                <FaEdit onClick={() => handleEdit(index)} title="Edit" style={{ cursor: "pointer", marginLeft: "10px", color: "blue" }} />
-                <FaTrash onClick={() => handleDelete(index)} title="Delete" style={{ cursor: "pointer", marginLeft: "10px", color: "red" }} />
+                <span style={{ textDecoration: movie.completed ? "line-through" : "none" }}>
+                  {movie.title}
+                </span>
+
+                {/* Mark as completed */}
+                <button onClick={() => toggleComplete(movie.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "green" }}>
+                  <FaCheck size={20} />
+                </button>
+
+                {/* Edit movie */}
+                <button onClick={() => startEditing(movie.id, movie.title)} style={{ background: "none", border: "none", cursor: "pointer", color: "blue" }}>
+                  <FaEdit size={20} />
+                </button>
+
+                {/* Delete movie */}
+                <button onClick={() => deleteMovie(movie.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "red" }}>
+                  <FaTrash size={20} />
+                </button>
               </>
             )}
           </li>
