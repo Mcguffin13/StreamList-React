@@ -1,0 +1,58 @@
+.streamlist-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 60%;
+    margin: auto;
+  }
+  
+  .input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .add-button {
+    background: blue;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .movie-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .movie-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: #ffffff22;
+    margin: 5px 0;
+    border-radius: 5px;
+  }
+  
+  .movie-item.completed {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+  
+  .check-button {
+    color: green;
+    cursor: pointer;
+  }
+  
+  .edit-button {
+    color: blue;
+    cursor: pointer;
+  }
+  
+  .delete-button {
+    color: red;
+    cursor: pointer;
+  }
+  

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaCheck, FaEdit, FaTrash } from "react-icons/fa";
+import "./StreamListPage.css"; // Make sure the CSS file is correctly linked
 
 const StreamListPage = () => {
-  // Load movies from localStorage or initialize as an empty array
   const [movies, setMovies] = useState(() => {
     const savedMovies = localStorage.getItem("movies");
     return savedMovies ? JSON.parse(savedMovies) : [];
@@ -12,24 +12,20 @@ const StreamListPage = () => {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
 
-  // Save movies to localStorage whenever the list updates
   useEffect(() => {
     localStorage.setItem("movies", JSON.stringify(movies));
   }, [movies]);
 
-  // Add a new movie to the list
   const addMovie = () => {
     if (input.trim() === "") return;
     setMovies([...movies, { id: Date.now(), title: input, completed: false }]);
-    setInput(""); // Clear input field
+    setInput("");
   };
 
-  // Delete a movie from the list
   const deleteMovie = (id) => {
     setMovies(movies.filter((movie) => movie.id !== id));
   };
 
-  // Mark a movie as completed
   const toggleComplete = (id) => {
     setMovies(
       movies.map((movie) =>
@@ -38,13 +34,11 @@ const StreamListPage = () => {
     );
   };
 
-  // Start editing a movie
   const startEditing = (id, title) => {
     setEditId(id);
     setEditText(title);
   };
 
-  // Save the edited movie title
   const saveEdit = () => {
     setMovies(
       movies.map((movie) =>
@@ -56,23 +50,23 @@ const StreamListPage = () => {
   };
 
   return (
-    <div>
-      <h1>StreamList Page</h1>
-      <p>Manage your streaming list below:</p>
+    <div className="streamlist-container">
+      <h1>🎬 My StreamList</h1>
+      <p>Keep track of your must-watch movies!</p>
 
-      {/* Input for adding new movies */}
-      <input
-        type="text"
-        placeholder="Enter movie title..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button onClick={addMovie}>Add</button>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Enter movie title..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button onClick={addMovie} className="add-button">➕ Add</button>
+      </div>
 
-      {/* List of movies */}
-      <ul>
+      <ul className="movie-list">
         {movies.map((movie) => (
-          <li key={movie.id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <li key={movie.id} className={`movie-item ${movie.completed ? "completed" : ""}`}>
             {editId === movie.id ? (
               <>
                 <input
@@ -80,27 +74,19 @@ const StreamListPage = () => {
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                 />
-                <button onClick={saveEdit}>Save</button>
+                <button onClick={saveEdit}>💾 Save</button>
               </>
             ) : (
               <>
-                <span style={{ textDecoration: movie.completed ? "line-through" : "none" }}>
-                  {movie.title}
-                </span>
-
-                {/* Mark as completed */}
-                <button onClick={() => toggleComplete(movie.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "green" }}>
-                  <FaCheck size={20} />
+                <span>{movie.title}</span>
+                <button onClick={() => toggleComplete(movie.id)} className="check-button">
+                  <FaCheck />
                 </button>
-
-                {/* Edit movie */}
-                <button onClick={() => startEditing(movie.id, movie.title)} style={{ background: "none", border: "none", cursor: "pointer", color: "blue" }}>
-                  <FaEdit size={20} />
+                <button onClick={() => startEditing(movie.id, movie.title)} className="edit-button">
+                  <FaEdit />
                 </button>
-
-                {/* Delete movie */}
-                <button onClick={() => deleteMovie(movie.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "red" }}>
-                  <FaTrash size={20} />
+                <button onClick={() => deleteMovie(movie.id)} className="delete-button">
+                  <FaTrash />
                 </button>
               </>
             )}

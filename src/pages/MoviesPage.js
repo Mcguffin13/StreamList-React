@@ -1,31 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { fetchPopularMovies } from "../api";
+import { fetchMovies } from "../api"; 
+import "./MoviesPage.css";
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
+
     const getMovies = async () => {
-      const movieData = await fetchPopularMovies();
+      const movieData = await fetchMovies();
       setMovies(movieData);
     };
     getMovies();
   }, []);
 
   return (
-    <div>
-      <h2>Popular Movies</h2>
-      <ul>
+    <div className="movies-container">
+      <h2>🎬 Popular Movies</h2>
+      <div className="movies-grid">
         {movies.map((movie) => (
-          <li key={movie.id}>
-            <h3>{movie.title}</h3>
+          <div key={movie.id} className="movie-card">
             <img
               src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
               alt={movie.title}
+              className="movie-poster"
             />
-          </li>
+            <h3>{movie.title}</h3>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
