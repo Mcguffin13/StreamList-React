@@ -192,3 +192,30 @@ nav ul li a:hover {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* 🔹 PWA INSTALL BUTTON */
+.pwa-install-button {
+  display: none; /* Initially hidden */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 16px;
+  background: #ff9800;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease-in-out;
+}
+
+.pwa-install-button:hover {
+  background: #e68900;
+}
+
+/* Ensure proper spacing when PWA is installed */
+@media (display-mode: standalone) {
+  .pwa-install-button {
+    display: none;
+  }
+}
